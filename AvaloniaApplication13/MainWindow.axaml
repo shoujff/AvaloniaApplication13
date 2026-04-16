@@ -10,29 +10,24 @@
         x:DataType="vm:MainViewModel"
         Title="AvaloniaApplication13">
   <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*" ShowGridLines="True">
-      <StackPanel x:Name="Main" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
-           <TextBox Height="30" Watermark="Login" Text="{Binding Login, Mode=TwoWay}"/> 
-           <TextBox Height="30" Watermark="Password" Text="{Binding Password, Mode=TwoWay}"/>
+      <StackPanel x:Name="LoginPanel" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
+           <TextBox  Watermark="Login" Text="{Binding Login, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/> 
+           <TextBox  Watermark="Password" Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
            <Button Content="Sign in" HorizontalAlignment="Center" Command="{Binding LoginCommand}" />
-           <Button Content="Register" Click="Register_Click"/>
+           <Button Content="Register" HorizontalAlignment="Center" Click="Register_Click"/>
       </StackPanel>
       <StackPanel x:Name="Register" Grid.Row="1" Grid.Column="1" IsVisible="False">
-           <TextBox x:Name="TextName"   Height="30"   Watermark="Name"/>
-           <TextBox x:Name="TextSurname"  Height="30"  Watermark="Surname"/>
-           <TextBox x:Name="TextLogin" Height="30"   Watermark="Login"/>
-           <TextBox x:Name="TextPassword"  Height="30"  Watermark="Password" PasswordChar="*"/>
-            <Button Content="Register" Click="RegisterUser_Click"/>
+           <TextBox  Text="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="30"   Watermark="Name"/>
+           <TextBox Text="{Binding SecondName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Height="30"  Watermark="Surname"/>
+           <TextBox Text="{Binding Login, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="30"   Watermark="Login"/>
+           <TextBox Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Height="30"  Watermark="Password" PasswordChar="*"/>
+            <Button Content="Register" Command="{Binding RegisterCommand}"/>
           <Button Content="Back" Click="Back_Click"/>
-           <TextBlock x:Name="ErrorMessage" Foreground="Red" FontSize="12" TextWrapping="Wrap" Margin="0,5" IsVisible="False"/>
-         
+       
+         <TextBox IsVisible="{Binding StatusVisible,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Text="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
       </StackPanel >
  
-      <ListBox x:Name="UsersList" Grid.Row="0" Grid.Column="1">
-		  <TextBlock x:Name="textblockname" FontSize="5 "/>
-          <TextBlock x:Name="textblocsurname" FontSize="5 "/>
-          <TextBlock x:Name="textblocklogin" FontSize="5 "/>
-          <TextBlock x:Name="textblockpassword" FontSize="5 "/>
-      </ListBox>
+
 
   </Grid>
 </Window>

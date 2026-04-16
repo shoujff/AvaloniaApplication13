@@ -15,15 +15,7 @@ namespace AvaloniaApplication13.Models
         public string Password { get; set; }
         public int  Id { get; set; }
         public bool IsLogin { get; set; } = false;
-       public User(string name, string surname, string login, string password)
-        {
-            Name = name;
-            Surname = surname;
-            Login = login;
-            Password = password;
-            Id = _nextId++;
-            
-        }
+      
     }
    
 }

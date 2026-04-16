@@ -1,4 +1,6 @@
-﻿using AvaloniaApplication13.Models;
+﻿using AvaloniaApplication13.Data;
+using AvaloniaApplication13.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,7 @@ namespace AvaloniaApplication13.Repositories
     public class BaseRepository<T> where T : User
     {
         public List<T> _items = new List<T>();
+
         public T Create(T item)
         {
             _items.Add(item);
