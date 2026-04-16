@@ -36,7 +36,7 @@ namespace AvaloniaApplication13.Repositories
                 item2.Password = item.Password;
                 return true;
             }
-            return true;
+            return false;
 
         }
         public void Delete(int id)
@@ -45,15 +45,7 @@ namespace AvaloniaApplication13.Repositories
             if (item != null)
                 _items.Remove(item);
         }
-        public void Clear()
-        {
-            _items.Clear();
-        }
-
-        public int Count()
-        {
-            return _items.Count;
-        }
+       
 
     }
 

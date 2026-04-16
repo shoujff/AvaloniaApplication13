@@ -11,10 +11,10 @@ namespace AvaloniaApplication13.Commands
     {
         private readonly Action _execute;
         private readonly Func<bool> _canExecute;
-        public RelayCommand(Action execute, Func<bool> canExecute)
+        public RelayCommand(Action execute, Func<bool> canExecute = null)
         {
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute ?? throw new ArgumentNullException();
+            _canExecute = canExecute;
         }
         public event EventHandler? CanExecuteChanged;
         public bool CanExecute(object parameter)
@@ -27,9 +27,9 @@ namespace AvaloniaApplication13.Commands
         }
         public void RaiseCanExecuteChanged()
         {
-            {
+            
                 CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
+            
         }
 
     }

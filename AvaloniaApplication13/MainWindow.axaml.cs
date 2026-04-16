@@ -17,22 +17,7 @@ namespace AvaloniaApplication13
             DataContext = new MainViewModel();
 
         }
-        public void Register_Click(object? sender, RoutedEventArgs e)
-        {
-          
-            
-                LoginPanel.IsVisible = false;
-                Register.IsVisible = true;
-             
-            
-         
-        }
-        public void Back_Click(object? sender, RoutedEventArgs e)
-        {
-            LoginPanel.IsVisible = true;
-            Register.IsVisible = false;
-          
-        }
+       
        
     
     }

@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using AvaloniaApplication13.Models;
 using AvaloniaApplication13.Data;
+using Azure.Core.Pipeline;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace AvaloniaApplication13.ViewModels
 {
@@ -17,12 +19,20 @@ namespace AvaloniaApplication13.ViewModels
     {
        
         private readonly UserRepository userRepository;
-        private string _firstName = "";
-        private string _secondName = "";
-        private string login = "";
-        private string password = "";
+        private string _registerFirstName = "";
+        private string _registerSecondName = "";
+        private string _registerLogin = "";
+        private string _registerPassword = "";
+        private string _registerConfirmPassword = "";
+
+
+        private string _loginLogin = "";
+        private string _loginPassword = "";
+
+        private bool _showRegisterForm = false;
         private string _status = "";
         private bool _statusVisible= false;
+        private string statusColor = "";
         public string Status
         {
             get { return _status; }
@@ -31,110 +41,211 @@ namespace AvaloniaApplication13.ViewModels
                 _status = value; OnPropertyChanged();
             }
         }
-
-
-            public bool StatusVisible
-             { 
-            get 
+        public string StatusColor
+        {
+            get { return statusColor; }
+            set
             {
-                return _statusVisible;
+                statusColor = value; OnPropertyChanged();
             }
+        }
+
+
+        public bool StatusVisible
+        { 
+            get { return _statusVisible; }
             set {
                 _statusVisible = value;
                 OnPropertyChanged();
             }
-           }  
+           }
+        public string LoginLogin
+        {
+            get { return _loginLogin; }
+            set
+            {
+                _loginLogin = value;
+                OnPropertyChanged();
+                LoginCommand.RaiseCanExecuteChanged();
+            }
+        }
 
-        public string FirstName
+        public string LoginPassword
         {
-            get { return _firstName; }
+            get { return _loginPassword; }
             set
             {
-                _firstName = value;
-                OnPropertyChanged(nameof(FullName));
+                _loginPassword = value;
+                OnPropertyChanged();
+                LoginCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public string RegisterFirstName
+        {
+            get { return _registerFirstName; }
+            set
+            {
+                _registerFirstName = value;
+                OnPropertyChanged();
                 RegisterCommand.RaiseCanExecuteChanged();
             }
         }
-        public string SecondName
+
+        public string RegisterSecondName
         {
-            get { return _secondName; }
+            get { return _registerSecondName; }
             set
             {
-                _secondName = value;
-                OnPropertyChanged(nameof(FullName));
+                _registerSecondName = value;
+                OnPropertyChanged();
                 RegisterCommand.RaiseCanExecuteChanged();
             }
         }
+        public string RegisterLogin
+        {
+            get { return _registerLogin; }
+            set
+            {
+                _registerLogin = value;
+                OnPropertyChanged();
+                RegisterCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public string RegisterPassword
+        {
+            get { return _registerPassword; }
+            set
+            {
+                _registerPassword = value;
+                OnPropertyChanged();
+                RegisterCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public bool ShowRegisterForm
+        {
+            get { return _showRegisterForm; }
+            set
+            {
+                _showRegisterForm = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowLoginForm));
+            }
+        }
+        public bool ShowLoginForm => !_showRegisterForm;
         public string FullName
         {
-            get => $"{FirstName} {SecondName }";
-         
-        }
-        public string Login
-        {
-            get => login;
-            set
-            {
-                login = value;
-                OnPropertyChanged();
-                LoginCommand.RaiseCanExecuteChanged();
-                RegisterCommand.RaiseCanExecuteChanged();
-            }
-        }
-        public string Password
-        {
-            get => password;
-            set
-            {
-                password = value;
-                OnPropertyChanged();
-                LoginCommand.RaiseCanExecuteChanged();
-                RegisterCommand.RaiseCanExecuteChanged();
-            }
-        }
-        public string Greeting => string.IsNullOrWhiteSpace(FullName) ? "Введите имя чтобы увидеть приветствие" : $"Привет {FullName}";
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        public bool CanLogin => !string.IsNullOrWhiteSpace(Login) && !string.IsNullOrWhiteSpace(Password);
-        public bool CanRegister()
-        {
-            return !string.IsNullOrWhiteSpace(FirstName) && !string.IsNullOrWhiteSpace(SecondName)  && !string.IsNullOrWhiteSpace(Login) && !string.IsNullOrWhiteSpace(Password);
+            get => $"{RegisterFirstName} {RegisterSecondName}";
         }
         public RelayCommand LoginCommand { get; }
         public RelayCommand RegisterCommand { get; }
+        public RelayCommand SwitchModeCommand { get; }
+        public bool CanLogin => !string.IsNullOrWhiteSpace(LoginLogin) &&
+                                !string.IsNullOrWhiteSpace(LoginPassword);
+
+        public bool CanRegister()
+        {
+            return !string.IsNullOrWhiteSpace(RegisterFirstName) &&
+                   !string.IsNullOrWhiteSpace(RegisterSecondName) &&
+                   !string.IsNullOrWhiteSpace(RegisterLogin) &&
+                   !string.IsNullOrWhiteSpace(RegisterPassword) &&
+                   RegisterPassword.Length >= 6;
+        }
+
+
+       
+      
+       
+
+       
+
         public MainViewModel()
         {
             
             userRepository = new UserRepository();
             LoginCommand = new RelayCommand(OnLogin, () => CanLogin);
             RegisterCommand = new RelayCommand(OnRegister, () => CanRegister());
+            SwitchModeCommand = new RelayCommand(OnSwitchMode);
+        }
+        public void OnSwitchMode()
+        {
+            ShowRegisterForm = !ShowRegisterForm;
+            if (ShowRegisterForm)
+            {
+                RegisterFirstName = "";
+                RegisterSecondName = "";
+                RegisterLogin = "";
+                RegisterPassword = "";
+            }
+            else
+            {
+                LoginLogin = "";
+                LoginPassword = "";
+            }
+            StatusVisible = false;
         }
         public void OnLogin()
         {
-            Status = "Вошел";
+            var user = userRepository.GetByLogin(LoginLogin);
+            if (user == null)
+            {
+                Status = "Пользователь с таким логином не найден";
+                StatusColor = "Red";
+                StatusVisible = true;
+
+                return;
+            }
+            if (user.Password != LoginPassword)
+            {
+                Status = "Неверный пароль!";
+                StatusColor = "Red";
+                StatusVisible = true;
+                return;
+            }
+            StatusColor = "Green";
+            Status = $"Добро пожаловать, {user.FullName}!";
             StatusVisible = true;
-            OnPropertyChanged(nameof(Status));
-            OnPropertyChanged(nameof(StatusVisible));
         }
         public void OnRegister()
         {
-            var newUser = new User
-            {
-                Name = FirstName,
-                Surname = SecondName,
-                Login = Login,
-                Password = Password,
-                IsLogin = false
-            };
-            userRepository.CreateUser(newUser);
 
-            FirstName = "";
-            SecondName = "";
-            Login = "";
-            Password = "";
-            Status = "создан";
-            StatusVisible = true;
+            if (!userRepository.UserExists(RegisterLogin))
+            {
+
+
+
+                var newUser = new User
+                {
+                    Name = RegisterFirstName,
+                    Surname = RegisterSecondName,
+                    Login = RegisterLogin,
+                    Password = RegisterPassword,
+                    IsLogin = false
+                };
+
+                userRepository.CreateUser(newUser);
+                Status = "Пользователь успешно создан!";
+                StatusColor = "Green";
+                StatusVisible = true;
+            }
+            else
+            {
+                StatusColor = "Red";
+                Status = "Пользователь с таким логином уже существует";
+                StatusVisible = true;
+            }
+
+            
+
+            RegisterFirstName = "";
+            RegisterSecondName = "";
+            RegisterLogin = "";
+            RegisterPassword = "";
+
+            RegisterCommand.RaiseCanExecuteChanged();
         }
-        
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

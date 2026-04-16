@@ -10,21 +10,54 @@
         x:DataType="vm:MainViewModel"
         Title="AvaloniaApplication13">
   <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*" ShowGridLines="True">
-      <StackPanel x:Name="LoginPanel" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
-           <TextBox  Watermark="Login" Text="{Binding Login, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/> 
-           <TextBox  Watermark="Password" Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-           <Button Content="Sign in" HorizontalAlignment="Center" Command="{Binding LoginCommand}" />
-           <Button Content="Register" HorizontalAlignment="Center" Click="Register_Click"/>
+      <StackPanel Grid.Row="1" Grid.Column="1" 
+                  VerticalAlignment="Center"
+                  IsVisible="{Binding ShowLoginForm}">
+
+           <TextBox  Watermark="Login"
+                     Text="{Binding LoginLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/> 
+
+           <TextBox  Watermark="Password"
+                     Text="{Binding LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+           <Button Content="Sign in"
+                   HorizontalAlignment="Center" 
+                   Command="{Binding LoginCommand}" />
+
+           <Button Content="Register"
+                   HorizontalAlignment="Center"
+                   Command="{Binding SwitchModeCommand}"/>
+
+            <TextBlock IsVisible="{Binding StatusVisible}" 
+                     Text="{Binding Status}"
+                     Foreground="{Binding StatusColor}"/>
+                     
+                    
       </StackPanel>
-      <StackPanel x:Name="Register" Grid.Row="1" Grid.Column="1" IsVisible="False">
-           <TextBox  Text="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="30"   Watermark="Name"/>
-           <TextBox Text="{Binding SecondName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Height="30"  Watermark="Surname"/>
-           <TextBox Text="{Binding Login, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="30"   Watermark="Login"/>
-           <TextBox Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Height="30"  Watermark="Password" PasswordChar="*"/>
-            <Button Content="Register" Command="{Binding RegisterCommand}"/>
-          <Button Content="Back" Click="Back_Click"/>
+      <StackPanel Grid.Row="1" Grid.Column="1"
+                  IsVisible="{Binding ShowRegisterForm}">
+           <TextBox
+           Text="{Binding RegisterFirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+           Watermark="Name"/>
+
+           <TextBox Text="{Binding RegisterSecondName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  
+                    Watermark="Surname"/>
+
+           <TextBox Text="{Binding RegisterLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    Watermark="Login"/>
+
+           <TextBox Text="{Binding RegisterPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  
+                    Watermark="Password" PasswordChar="*"/>
+
+            <Button Content="Register"
+                    Command="{Binding RegisterCommand}"/>
+
+            <Button Content="Back"
+                    Command="{Binding SwitchModeCommand}"/>
        
-         <TextBox IsVisible="{Binding StatusVisible,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Text="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+         <TextBlock IsVisible="{Binding StatusVisible}"
+                  Text="{Binding Status}"
+                  Foreground="{Binding StatusColor}"/>
       </StackPanel >
  
 

@@ -8,13 +8,14 @@ namespace AvaloniaApplication13.Models
 {
     public class User
     {
-        private static int _nextId = 1;
+        
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
         public int  Id { get; set; }
         public bool IsLogin { get; set; } = false;
+        public string FullName => $"{Name} {Surname}";
       
     }
    
